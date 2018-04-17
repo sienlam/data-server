@@ -3,15 +3,23 @@ const db = require('./database.js');
 const Client  = require('./client.js');
 const express = require('express');
 const app = express();
+var clientMap = {};
 
 db.tryConnect(function(err) {
-    if (!err) {
-        console.log('Database connected...');
-    }
+    if (err) {
+		console.log('Database connection fail (%s)', err);
+    } 
+	else {
+		console.log('Database connected...');
+	}
 })
 
 const client = new Client(1000);
+clientMap[client.id] = client;
 console.log("client id:%d", client.id);
+
+const client2 = clientMap['1000'];
+console.log("client2 id:%d", client2.id);
 
 // ------------------
 function handleAction(action) {

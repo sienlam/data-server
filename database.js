@@ -15,8 +15,9 @@ db.tryConnect = function(tryConnectCallback) {
         if (tryConnectCallback) {
             tryConnectCallback(err)
         }
-        if (err) throw err;
-        connection.release();
+		if (connection) {
+			connection.release();
+		}
     });
 };
 
