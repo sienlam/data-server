@@ -1,19 +1,18 @@
 const config = require('./config.js');
 const mysql = require('mysql');
+var database = {};
 
-const pool = mysql.createPool({
-    host: config.DB_HOST,
-    user: config.DB_USER,
-    password: config.DB_PASSWORD,
-    port: config.DB_PORT,
-    database: config.DB_SCHEMA,
-});
-
-var db = {};
-db.tryConnect = function(tryConnectCallback) {
-    pool.getConnection(function (err, connection) {
-        if (tryConnectCallback) {
-            tryConnectCallback(err)
+database.setup = function(setupCallback) {
+    database.pool = mysql.createPool({
+        host: config.DB_HOST,
+        user: config.DB_USER,
+        password: config.DB_PASSWORD,
+        port: config.DB_PORT,
+        database: config.DB_SCHEMA,
+    });
+    database.pool.getConnection(function (err, connection) {
+        if (setupCallback) {
+            setupCallback(err)
         }
 		if (connection) {
 			connection.release();
@@ -21,8 +20,8 @@ db.tryConnect = function(tryConnectCallback) {
     });
 };
 
-db.loadClient = function(account, password, loadClientCallback) {
-    pool.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
+database.loadClient = function(account, password, loadClientCallback) {
+    database.pool.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
         if (loadClientCallback) {
             tryConnectCallback(err)
         }
@@ -30,4 +29,4 @@ db.loadClient = function(account, password, loadClientCallback) {
     });
 };
 
-module.exports = db;
+module.exports = database;
